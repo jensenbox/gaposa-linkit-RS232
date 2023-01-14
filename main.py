@@ -35,11 +35,11 @@ def send_instruction(bank, channel, command):
     binary_date = bytes(instructions)
 
     print("Instructions: %s" % instructions)
-    print("Checksum: %s" % checksum)
+    print("Checksum: %X" % checksum)
     print("Binary Data: %s" % binary_date)
 
     with serial.Serial(
-            port='/dev/ttyS0',
+            port='/tmp/ttyV1',
             baudrate=9600,
             bytesize=serial.EIGHTBITS,
             parity=serial.PARITY_NONE,
@@ -47,10 +47,21 @@ def send_instruction(bank, channel, command):
             timeout=5
     ) as serial_port:
         serial_port.write(binary_date)
+
+        # The expected response is 0x66 <COMMAND> 0xFF
         response = serial_port.read(3)
 
     print("Response: %s" % response)
 
 
 if __name__ == '__main__':
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_ADD_MOTOR)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_DELETE_MOTOR)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_PRESET)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_TILT_UP)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_TILT_DOWN)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_STOP)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_UP)
+    send_instruction(BANK_A, CHANNEL_1, COMMAND_ADD_MOTOR)
     send_instruction(BANK_A, CHANNEL_1, COMMAND_DOWN)
+
